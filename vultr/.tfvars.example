@@ -1,0 +1,8 @@
+vultr_api_key = "123123123"
+vm_plan = "vc2-1c-1gb"
+vm_region = "sea"
+image_id = "localhost"
+vm_label = "testbed for terraform"
+vm_hostname = "testhost"
+ssh_key_name = "ssh-key-name"
+ssh_key_path = "/path/to/ssh_pub_key"
