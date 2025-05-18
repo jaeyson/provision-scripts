@@ -17,6 +17,18 @@ jobs:
 
     - uses: hashicorp/setup-terraform@v3
 
+    - name: ls
+      run: ls -lha ~/
+
+    - name: Cache packer
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.config/packer/plugins/github.com/vultr/vultr
+        key: packer-${{ runner.os }}-${{ hashFiles('**/packer-plugin-vultr_*') }}
+        restore-keys: |
+          packer-${{ runner.os }}-
+
     - uses: actions/cache@v4
       name: Cache plugin dir
       with:
@@ -34,13 +46,16 @@ jobs:
 
     - name: validate packer files
       run: |
-        cp ./vultr/packer/secret.pkrvars.hcl.example ./vultr/packer/secret.pkrvars.hcl && \
-        packer validate -var-file=./vultr/packer/secret.pkrvars.hcl ./vultr/packer/
+        cd ./vultr/packer/
+        packer init packer.pkr.hcl
+        cp secret.pkrvars.hcl.example secret.pkrvars.hcl
+        packer validate -var-file=secret.pkrvars.hcl .
 
     - uses: terraform-linters/setup-tflint@v4
       name: Setup TFLint
       with:
         tflint_version: latest
+
     - name: Show version
       run: tflint --version
 
