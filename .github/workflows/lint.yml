@@ -35,7 +35,7 @@ jobs:
     - name: validate packer files
       run: |
         cp ./vultr/packer/secret.pkrvars.hcl.example ./vultr/packer/secret.pkrvars.hcl && \
-        packer validate -var-file=secret.pkrvars.hcl ./vultr/packer/
+        packer validate -var-file=./vultr/packer/secret.pkrvars.hcl ./vultr/packer/
 
     - uses: terraform-linters/setup-tflint@v4
       name: Setup TFLint
