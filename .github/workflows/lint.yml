@@ -25,7 +25,7 @@ jobs:
       with:
         path: |
           ~/.config/packer/plugins/github.com/vultr/vultr
-        key: packer-${{ runner.os }}-${{ hashFiles('**/packer-plugin-vultr_*') }}
+        key: packer-${{ runner.os }}-${{ hashFiles('**/*_linux_amd64') }}
         restore-keys: |
           packer-${{ runner.os }}-
 
