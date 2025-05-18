@@ -16,11 +16,11 @@ variable "vm_region" {
   default     = null
 }
 
-variable "os_id" {
-  type        = number
-  description = "The ID of the operating system to be installed on the server"
-  default     = null
-}
+# variable "os_id" {
+#   type        = number
+#   description = "The ID of the operating system to be installed on the server"
+#   default     = null
+# }
 
 variable "snapshot_id" {
   type        = string
