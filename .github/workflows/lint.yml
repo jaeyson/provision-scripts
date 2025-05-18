@@ -17,9 +17,6 @@ jobs:
 
     - uses: hashicorp/setup-terraform@v3
 
-    - name: ls
-      run: ls -lha ~/
-
     - name: Cache packer
       uses: actions/cache@v4
       with:
