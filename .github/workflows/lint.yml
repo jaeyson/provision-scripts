@@ -1,8 +1,11 @@
 name: Lint
 on:
   push:
-    branches: [ master ]
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   tflint:
@@ -17,6 +20,12 @@ jobs:
       with:
         path: ~/.tflint.d/plugins
         key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+    - name: check format terraform files
+      run: terraform fmt -check -recursive .
+
+    - name: check format packer files
+      run: packer fmt -check -recursive .
 
     - uses: terraform-linters/setup-tflint@v4
       name: Setup TFLint
