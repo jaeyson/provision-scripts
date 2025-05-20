@@ -1,16 +1,16 @@
-variable "vultr_api_key" {
+variable "api_key" {
   type        = string
   description = "API key for Vultr"
   sensitive   = true
 }
 
-variable "vm_plan" {
+variable "plan" {
   type        = string
   description = "VM plan based on region-id"
   default     = null
 }
 
-variable "vm_region" {
+variable "region" {
   type        = string
   description = "The ID of the region that the instance is to be created in."
   default     = null
@@ -29,11 +29,18 @@ variable "snapshot_id" {
   sensitive   = true
 }
 
-variable "image_id" {
-  type        = any
-  description = "The ID of the Vultr marketplace application to be installed on the server. Note marketplace applications are denoted by type: marketplace and you must use the image_id not the id."
+variable "firewall_group_id" {
+  type        = string
+  description = "The ID of the firewall group to assign to the server."
   default     = null
+  sensitive   = true
 }
+
+# variable "image_id" {
+#   type        = any
+#   description = "The ID of the Vultr marketplace application to be installed on the server. Note marketplace applications are denoted by type: marketplace and you must use the image_id not the id."
+#   default     = null
+# }
 
 variable "is_backups_enabled" {
   type        = string
@@ -41,7 +48,7 @@ variable "is_backups_enabled" {
   default     = "disabled"
 }
 
-variable "vm_label" {
+variable "label" {
   type        = string
   description = "A label for the server"
   default     = null
@@ -59,7 +66,7 @@ variable "ssh_key_path" {
   sensitive   = true
 }
 
-variable "vm_hostname" {
+variable "hostname" {
   type        = string
   description = "The hostname to assign to the server"
 }

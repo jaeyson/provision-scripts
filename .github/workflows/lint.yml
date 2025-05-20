@@ -12,55 +12,95 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      name: Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-    - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
-    - name: Cache packer
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.config/packer/plugins/github.com/vultr/vultr
-        key: packer-${{ runner.os }}-${{ hashFiles('**/*_linux_amd64') }}
-        restore-keys: |
-          packer-${{ runner.os }}-
+      - name: Lint ansible-related files
+        uses: ansible/ansible-lint@main
+        with:
+          args: "--offline"
 
-    - uses: actions/cache@v4
-      name: Cache plugin dir
-      with:
-        path: ~/.tflint.d/plugins
-        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+      - name: Cache packer
+        uses: actions/cache@v4
+        with:
+          path: ~/.config/packer/plugins/github.com/vultr/vultr
+          key: packer-${{ runner.os }}-${{ hashFiles('**/packer.pkr.hcl') }}
+          restore-keys: ${{ runner.os }}-packer
 
-    - name: check format terraform files
-      run: terraform fmt -check -recursive .
+      - uses: actions/cache@v4
+        name: Cache tf mysql provider
+        with:
+          path: vultr/terraform/database/mysql
+          key: ${{ runner.os }}-tf-mysql-${{ hashFiles('vultr/terraform/database/mysql/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-tf-mysql-
 
-    - name: check format packer files
-      run: packer fmt -check -recursive .
+      - uses: actions/cache@v4
+        name: Cache tf postgres provider
+        with:
+          path: vultr/terraform/database/postgres
+          key: ${{ runner.os }}-tf-pg-${{ hashFiles('vultr/terraform/database/postgres/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-tf-pg-
 
-    - name: validate terraform files
-      run: terraform validate
+      - uses: actions/cache@v4
+        name: Cache tf vultr provider
+        with:
+          path: vultr/terraform/instance
+          key: ${{ runner.os }}-tf-vultr-${{ hashFiles('vultr/terraform/instance/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-tf-vultr-
 
-    - name: validate packer files
-      run: |
-        cd ./vultr/packer/
-        packer init packer.pkr.hcl
-        cp secret.pkrvars.hcl.example secret.pkrvars.hcl
-        packer validate -var-file=secret.pkrvars.hcl .
+      - uses: actions/cache@v4
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+          restore-keys: ${{ runner.os }}-tflint-
 
-    - uses: terraform-linters/setup-tflint@v4
-      name: Setup TFLint
-      with:
-        tflint_version: latest
+      - name: check format terraform files
+        run: terraform fmt -check -recursive .
 
-    - name: Show version
-      run: tflint --version
+      - name: check format packer files
+        run: packer fmt -check -recursive .
 
-    - name: Init TFLint
-      run: tflint --init
-      env:
-        # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
-        GITHUB_TOKEN: ${{ github.token }}
+      - name: validate terraform mysql
+        run: |
+          cd ./vultr/terraform/database/mysql
+          terraform init
+          terraform validate
 
-    - name: Run TFLint
-      run: tflint --recursive --format compact
+      - name: validate terraform postgres
+        run: |
+          cd ./vultr/terraform/database/mysql
+          terraform init
+          terraform validate
+
+      - name: validate terraform vultr
+        run: |
+          cd ./vultr/terraform/instance
+          terraform init
+          terraform validate
+
+      - name: validate packer files
+        run: |
+          cd ./vultr/packer/
+          packer init packer.pkr.hcl
+          cp secret.pkrvars.hcl.example secret.pkrvars.hcl
+          packer validate -var-file=secret.pkrvars.hcl .
+
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
+        with:
+          tflint_version: latest
+
+      - name: Show version
+        run: tflint --version
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint --recursive --format compact

@@ -1,0 +1,7 @@
+api_key                 = ""
+database_engine         = "pg"
+database_engine_version = "17"
+region                  = "sea"
+plan                    = "vultr-dbaas-hobbyist-cc-1-25-1"
+label                   = "staging"
+cluster_time_zone       = "America/Los_Angeles" # Seattle also uses pacific tz

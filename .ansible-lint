@@ -1,0 +1,20 @@
+---
+skip_list:
+  - package-latest
+  - run-once[play]
+  - jinja[invalid]
+
+mock_modules:
+  - community.general.ufw
+
+mock_roles:
+  - geerlingguy.swap
+
+enable_list:
+  - fqcn-builtins
+
+offline: true
+
+exclude_paths:
+  - .git/
+  - .github/

@@ -1,0 +1,22 @@
+####################################################
+#####     Ansible-specific
+####################################################
+
+*.retry
+
+hosts.ini
+
+### Vagrant ###
+# General
+.vagrant/
+
+# Log files (if you are creating logs in debug mode, uncomment this)
+# *.log
+
+### Vagrant Patch ###
+*.box
+
+inventory.yml
+**global_variables.yml
+
+**.DS_Store
