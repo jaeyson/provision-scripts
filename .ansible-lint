@@ -6,6 +6,8 @@ skip_list:
 
 mock_modules:
   - community.general.ufw
+
+mock_roles:
   - geerlingguy.swap
 
 enable_list:
