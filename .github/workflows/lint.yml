@@ -19,6 +19,8 @@ jobs:
 
       - name: Lint ansible-related files
         uses: ansible/ansible-lint@main
+        with:
+          args: "--offline"
 
       - name: Cache packer
         uses: actions/cache@v4
