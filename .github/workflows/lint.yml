@@ -22,31 +22,40 @@ jobs:
         with:
           args: "--offline"
 
-      - name: Cache terraform providers
-        uses: actions/cache@v4
-        with:
-          path: |
-            vultr/terraform/database/mysql
-            vultr/terraform/database/postgres
-            vultr/terraform/instance
-          key: ${{ runner.os }}-terraform-${{ hashFiles('terraform') }}
-          restore-keys: |
-            ${{ runner.os }}-terraform-
-
       - name: Cache packer
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.config/packer/plugins/github.com/vultr/vultr
-          key: packer-${{ runner.os }}-${{ hashFiles('**/*_linux_amd64') }}
-          restore-keys: |
-            packer-${{ runner.os }}-
+          path: ~/.config/packer/plugins/github.com/vultr/vultr
+          key: packer-${{ runner.os }}-${{ hashFiles('**/packer.pkr.hcl') }}
+          restore-keys: ${{ runner.os }}-packer
+
+      - uses: actions/cache@v4
+        name: Cache tf mysql provider
+        with:
+          path: vultr/terraform/database/mysql
+          key: ${{ runner.os }}-tf-mysql-${{ hashFiles('vultr/terraform/database/mysql/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-tf-mysql-
+
+      - uses: actions/cache@v4
+        name: Cache tf postgres provider
+        with:
+          path: vultr/terraform/database/postgres
+          key: ${{ runner.os }}-tf-pg-${{ hashFiles('vultr/terraform/database/postgres/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-tf-pg-
+
+      - uses: actions/cache@v4
+        name: Cache tf vultr provider
+        with:
+          path: vultr/terraform/instance
+          key: ${{ runner.os }}-tf-vultr-${{ hashFiles('vultr/terraform/instance/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-tf-vultr-
 
       - uses: actions/cache@v4
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins
           key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+          restore-keys: ${{ runner.os }}-tflint-
 
       - name: check format terraform files
         run: terraform fmt -check -recursive .
