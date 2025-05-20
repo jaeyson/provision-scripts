@@ -4,6 +4,10 @@ skip_list:
   - run-once[play]
   - jinja[invalid]
 
+mock_modules:
+  - community.general.ufw
+  - geerlingguy.swap
+
 enable_list:
   - fqcn-builtins
 
