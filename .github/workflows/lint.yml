@@ -12,55 +12,70 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      name: Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-    - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
-    - name: Cache packer
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.config/packer/plugins/github.com/vultr/vultr
-        key: packer-${{ runner.os }}-${{ hashFiles('**/*_linux_amd64') }}
-        restore-keys: |
-          packer-${{ runner.os }}-
+      - name: Lint ansible-related files
+        uses: ansible/ansible-lint@main
 
-    - uses: actions/cache@v4
-      name: Cache plugin dir
-      with:
-        path: ~/.tflint.d/plugins
-        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+      - name: Cache packer
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.config/packer/plugins/github.com/vultr/vultr
+          key: packer-${{ runner.os }}-${{ hashFiles('**/*_linux_amd64') }}
+          restore-keys: |
+            packer-${{ runner.os }}-
 
-    - name: check format terraform files
-      run: terraform fmt -check -recursive .
+      - uses: actions/cache@v4
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
-    - name: check format packer files
-      run: packer fmt -check -recursive .
+      - name: check format terraform files
+        run: terraform fmt -check -recursive .
 
-    - name: validate terraform files
-      run: terraform validate
+      - name: check format packer files
+        run: packer fmt -check -recursive .
 
-    - name: validate packer files
-      run: |
-        cd ./vultr/packer/
-        packer init packer.pkr.hcl
-        cp secret.pkrvars.hcl.example secret.pkrvars.hcl
-        packer validate -var-file=secret.pkrvars.hcl .
+      - name: validate terraform mysql
+        run: |
+          cd ./vultr/terraform/database/mysql
+          terraform validate
 
-    - uses: terraform-linters/setup-tflint@v4
-      name: Setup TFLint
-      with:
-        tflint_version: latest
+      - name: validate terraform postgres
+        run: |
+          cd ./vultr/terraform/database/mysql
+          terraform validate
 
-    - name: Show version
-      run: tflint --version
+      - name: validate terraform vultr
+        run: |
+          cd ./vultr/terraform/instance
+          terraform validate
 
-    - name: Init TFLint
-      run: tflint --init
-      env:
-        # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
-        GITHUB_TOKEN: ${{ github.token }}
+      - name: validate packer files
+        run: |
+          cd ./vultr/packer/
+          packer init packer.pkr.hcl
+          cp secret.pkrvars.hcl.example secret.pkrvars.hcl
+          packer validate -var-file=secret.pkrvars.hcl .
 
-    - name: Run TFLint
-      run: tflint --recursive --format compact
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
+        with:
+          tflint_version: latest
+
+      - name: Show version
+        run: tflint --version
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint --recursive --format compact

@@ -1,0 +1,14 @@
+---
+- name: Base server
+  hosts: default:packer-base
+  become: true
+  gather_facts: true
+  vars_files:
+    - global_variables.yml
+  roles:
+    - wait_for_connection
+    - packages
+    # - firewall # no need, since we're using firewall from providers
+    - security
+    - geerlingguy.swap
+    # - reboot_if_needed
