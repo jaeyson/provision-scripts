@@ -22,6 +22,17 @@ jobs:
         with:
           args: "--offline"
 
+      - name: Cache terraform providers
+        uses: actions/cache@v4
+        with:
+          path: |
+            vultr/terraform/database/mysql
+            vultr/terraform/database/postgres
+            vultr/terraform/instance
+          key: ${{ runner.os }}-terraform-${{ hashFiles('terraform') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
       - name: Cache packer
         uses: actions/cache@v4
         with:
@@ -46,16 +57,19 @@ jobs:
       - name: validate terraform mysql
         run: |
           cd ./vultr/terraform/database/mysql
+          terraform init
           terraform validate
 
       - name: validate terraform postgres
         run: |
           cd ./vultr/terraform/database/mysql
+          terraform init
           terraform validate
 
       - name: validate terraform vultr
         run: |
           cd ./vultr/terraform/instance
+          terraform init
           terraform validate
 
       - name: validate packer files
