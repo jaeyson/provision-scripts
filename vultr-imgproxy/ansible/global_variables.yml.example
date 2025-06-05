@@ -1,0 +1,18 @@
+# Whether to reboot when needed during unattended upgrades.
+security_autoupdate_reboot: "false"
+
+# The time to trigger a reboot, when needed, if
+# security_autoupdate_reboot is set to true.
+# In 24h "hh:mm" clock format.
+security_autoupdate_reboot_time: "03:00"
+
+custom_domain: "domain.co"
+compose_directory: /opt/imgproxy
+
+imgproxy_use_s3: "true"
+imgproxy_s3_region: "us-east-2"
+imgproxy_s3_endpoint: "s3.us-east-2.endpoint.com"
+aws_access_key_id: ""
+aws_secret_access_key: ""
+imgproxy_fallback_image_url: "s3://bucket/404.jpg"
+imgproxy_fallback_image_http_code: "404"

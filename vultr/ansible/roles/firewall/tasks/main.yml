@@ -1,13 +1,13 @@
 ---
-- name: Configure ufw defaults
+- name: Configure ufw defaults for incoming traffic
   community.general.ufw:
-    direction: "{{ item.direction }}"
-    policy: "{{ item.policy }}"
-  loop:
-    - direction: incoming
-      policy: deny
-    - direction: outgoing
-      policy: allow
+    default: deny
+    direction: incoming
+
+- name: Configure ufw defaults for outgoing traffic
+  community.general.ufw:
+    default: allow
+    direction: outgoing
 
 - name: Configure ufw rules
   community.general.ufw:

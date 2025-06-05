@@ -1,0 +1,15 @@
+{{ custom_domain }} {
+  handle_path /* {
+    uri replace "=" ":"
+    uri replace "&" "/"
+    rewrite * /unsafe/{query}/plain/s3://bucket_name/{path}
+    reverse_proxy imgproxy:8080
+  }
+
+  handle_errors {
+    uri replace "=" ":"
+    uri replace "&" "/"
+    rewrite * /unsafe/{query}/plain/s3://bucket_name/photo/404.jpg
+    reverse_proxy imgproxy:8080
+  }
+}

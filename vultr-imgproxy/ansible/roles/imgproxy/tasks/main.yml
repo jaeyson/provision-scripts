@@ -1,0 +1,38 @@
+---
+- name: Ensure directory exists {{ compose_directory }}
+  ansible.builtin.file:
+    path: "{{ compose_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy docker-compose.yml from template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ compose_directory }}/docker-compose.yml"
+    mode: '0600'
+
+- name: Deploy Caddyfile from template
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: "{{ compose_directory }}/Caddyfile"
+    mode: '0600'
+
+- name: Add env
+  ansible.builtin.template:
+    src: .env.j2
+    dest: "{{ compose_directory }}/.env"
+    mode: '0600'
+
+- name: Deploy systemd service from template
+  ansible.builtin.template:
+    src: imgproxy.service.j2
+    dest: /etc/systemd/system/imgproxy.service
+    mode: '0600'
+  notify:
+    - Reload systemd
+
+- name: Enable and start imgproxy service
+  ansible.builtin.systemd:
+    name: imgproxy
+    enabled: true
+    state: started
