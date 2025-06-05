@@ -60,11 +60,11 @@ variable "ssh_key_name" {
   sensitive   = true
 }
 
-variable "ssh_key_path" {
-  type        = string
-  description = "path to ssh pub key"
-  sensitive   = true
-}
+# variable "ssh_key_path" {
+#   type        = string
+#   description = "path to ssh pub key"
+#   sensitive   = true
+# }
 
 variable "hostname" {
   type        = string
