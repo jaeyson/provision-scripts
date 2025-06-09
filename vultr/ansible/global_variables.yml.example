@@ -3,3 +3,6 @@ security_autoupdate_reboot: "false"
 
 # The time to trigger a reboot, when needed, if security_autoupdate_reboot is set to true. In 24h "hh:mm" clock format.
 security_autoupdate_reboot_time: "03:00"
+new_username: "automation_user"
+ssh_key_comment: "your comment"
+ssh_key_passphrase: "your_passphrase"

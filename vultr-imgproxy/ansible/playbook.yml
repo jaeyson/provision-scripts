@@ -1,0 +1,14 @@
+---
+- name: Deploy Imgproxy and Caddy with Docker Compose and systemd
+  hosts: webservers
+  become: true
+  gather_facts: true
+  vars_files:
+    - global_variables.yml
+  roles:
+    - wait_for_connection
+    - packages
+    - imgproxy
+    - security
+    - geerlingguy.swap
+    - reboot_if_needed

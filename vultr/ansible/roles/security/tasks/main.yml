@@ -30,3 +30,53 @@
     - { key: "Unattended-Upgrade::Automatic-Reboot", value: "{{ security_autoupdate_reboot }}" }
     - { key: "Unattended-Upgrade::Automatic-Reboot-Time", value: "{{ security_autoupdate_reboot_time }}" }
   when: security_autoupdate_reboot
+
+- name: Create new user '{{ new_username }}'
+  ansible.builtin.user:
+    name: "{{ new_username }}"
+    state: present
+    groups: sudo # debian/ubuntu
+    generate_ssh_key: true
+    ssh_key_type: "ed25519"
+    ssh_key_passphrase: "{{ ssh_key_passphrase }}"
+    ssh_key_comment: "ansible-generated for {{ new_username }}"
+    # shell: /bin/bash
+    # create_home: yes
+    # home: "/home/{{ new_username }}"
+    comment: "Automation user for {{ ssh_key_comment }}"
+    append: true
+
+# - name: Add user '{{ new_username }}' to the 'sudo' group
+#   ansible.builtin.user:
+#     name: "{{ new_username }}"
+#     groups: sudo # debian/ubuntu
+#     append: yes
+
+# - name: Ensure .ssh directory exists for '{{ new_username }}' with correct permissions
+#   ansible.builtin.file:
+#     path: "/home/{{ new_username }}/.ssh"
+#     state: directory
+#     owner: "{{ new_username }}"
+#     group: "{{ new_username }}"
+#     mode: '0700'
+
+- name: Read the content of the generated public key from the remote host
+  # The 'slurp' module reads a file from the remote host and returns
+  # its content base64 encoded.
+  ansible.builtin.slurp:
+    src: "/home/{{ new_username }}/.ssh/id_ed25519.pub"
+  register: ssh_public_key_content # Stores the result in this variable
+  become: true
+  become_user: "{{ new_username }}"
+
+- name: Add generated public key to authorized_keys using lineinfile for '{{ new_username }}'
+  # This module ensures a specific line is present in a file.
+  ansible.builtin.lineinfile:
+    path: "/home/{{ new_username }}/.ssh/authorized_keys"
+    line: "{{ ssh_public_key_content['content'] | b64decode }}" # Decodes the slurped content
+    create: true # Create the file if it doesn't exist
+    owner: "{{ new_username }}"
+    group: "{{ new_username }}"
+    mode: '0600' # Set appropriate permissions for authorized_keys
+  become: true
+  become_user: "{{ new_username }}" # Ensure this task runs as the new user to manage their file

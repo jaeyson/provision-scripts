@@ -1,6 +1,6 @@
 # Provision scripts
 
-[![Lint](https://github.com/jaeyson/provision-scripts/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/jaeyson/provision-scripts/actions/workflows/lint.yml)
+[![Lint](https://github.com/jaeyson/provision-scripts/actions/workflows/lint.yml/badge.svg)](https://github.com/jaeyson/provision-scripts/actions/workflows/lint.yml)
 
 ## Packer-specific stuffs
 

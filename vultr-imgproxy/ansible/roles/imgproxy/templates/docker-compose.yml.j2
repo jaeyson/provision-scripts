@@ -1,0 +1,23 @@
+services:
+  imgproxy:
+    image: ghcr.io/imgproxy/imgproxy:v3.28
+    container_name: imgproxy
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+
+  caddy:
+    image: caddy:2.10-alpine
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy_config:/config
+      - ./caddy_data:/data
+    depends_on:
+      - imgproxy
+    restart: unless-stopped
