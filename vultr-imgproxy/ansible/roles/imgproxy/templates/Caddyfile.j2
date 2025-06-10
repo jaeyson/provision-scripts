@@ -1,5 +1,9 @@
 {{ custom_domain }} {
   handle_path /* {
+    #request_body {
+    #  max_size 200MB
+    #}
+
     uri replace "=" ":"
     uri replace "&" "/"
     rewrite * /unsafe/{query}/plain/s3://bucket_name/{path}
