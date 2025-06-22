@@ -1,0 +1,26 @@
+---
+- name: Ensure /var/log/journal directory exists
+  ansible.builtin.file:
+    path: /var/log/journal
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart systemd-journald
+
+- name: Configure journald limits
+  ansible.builtin.lineinfile:
+    owner: root
+    group: root
+    mode: '0644'
+    path: /etc/systemd/journald.conf
+    regexp: '^{{ item.key }}='
+    line: '{{ item.key }}={{ item.value }}'
+    insertafter: '^\[Journal\]'
+    create: true
+  with_items:
+    - { key: 'Storage', value: 'persistent' }
+    - { key: 'SystemMaxUse', value: '100M' }
+    - { key: 'MaxRetentionSec', value: '7d' }
+  notify: Restart systemd-journald
+
