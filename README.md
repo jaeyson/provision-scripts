@@ -9,7 +9,7 @@
 ```bash
 cd vultr/packer
 
-packer validate .
+packer validate -var-file=secret.pkrvars.hcl .
 
 packer build -var-file=secret.pkvars.hcl packer.pkr.hcl
 ```
@@ -49,9 +49,9 @@ Where `11111111-0000-2222-3333-444444444444` (snapshot id) is the newly created 
 > then remove if there's `image_id` in `terraform.tfvars`.
 
 ```bash
-cd ./vultr/
+cd ./vultr/terraform
 
-cp .tfvars.example terraform.tfvars
+cp terraform.tfvars.example terraform.tfvars
 
 # idempotency and predictability
 terraform plan -out=vultr.tfplan
