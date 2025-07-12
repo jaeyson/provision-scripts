@@ -54,6 +54,16 @@ jobs:
         cd vultr-actix-web/web_app &&
         cargo build --release --verbose
 
+    - uses: actions/upload-artifact@v4
+      with:
+        name: web-app-artifact
+        path: vultr-actix-web/web_app/target/release/web_app
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: web-app-artifact
+        path: artifactfiles
+
     - name: Copy files via SSH
       uses: appleboy/scp-action@v1
       with:
@@ -61,7 +71,7 @@ jobs:
         username: root
         password: ${{ secrets.PASSWORD }}
         port: 22
-        source: vultr-actix-web/web_app/target/release/web_app
+        source: artifactfiles/*
         target: /usr/local/bin
 
     - name: Deploy to VPS
