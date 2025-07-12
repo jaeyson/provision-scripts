@@ -54,6 +54,16 @@ jobs:
         cd vultr-actix-web/web_app &&
         cargo build --release --verbose
 
+    - name: Copy files via SSH
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        source: vultr-actix-web/web_app/target/release/web_app
+        target: /usr/local/bin
+
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1
       with:
@@ -63,16 +73,6 @@ jobs:
         port: 22
         script: |
           pwd
-
-    # - name: Copy files via SSH
-    #   uses: appleboy/scp-action@v1
-    #   with:
-    #     host: ${{ secrets.HOST }}
-    #     username: root
-    #     password: ${{ secrets.PASSWORD }}
-    #     port: 22
-    #     source: "vultr-actix-web/web_app/target/release/web_app"
-    #     target: /usr/local/bin/web_app
 
     # - name: Deploy to VPS
     #   if: github.ref == 'refs/heads/main'
