@@ -11,4 +11,3 @@
     # - firewall # no need, since we're using firewall from providers
     - security
     - geerlingguy.swap
-    # - reboot_if_needed
