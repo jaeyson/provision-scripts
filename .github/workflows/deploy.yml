@@ -26,23 +26,23 @@ jobs:
 
     - name: Format check
       run: |
-      cd vultr-actix-web/web_app &&
-      cargo fmt -- --check
+        cd vultr-actix-web/web_app &&
+        cargo fmt -- --check
 
     - name: Lint with Clippy
       run: |
-      cd vultr-actix-web/web_app &&
-      cargo clippy -- -D warnings
+        cd vultr-actix-web/web_app &&
+        cargo clippy -- -D warnings
 
     - name: Run tests
       run: |
-      cd vultr-actix-web/web_app &&
-      cargo test --verbose
+        cd vultr-actix-web/web_app &&
+        cargo test --verbose
 
     - name: Build
       run: |
-      cd vultr-actix-web/web_app &&
-      cargo build --release --verbose
+        cd vultr-actix-web/web_app &&
+        cargo build --release --verbose
 
     - name: Copy files via SSH
       uses: appleboy/scp-action@v1
