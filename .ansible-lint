@@ -4,8 +4,13 @@ skip_list:
   - run-once[play]
   - jinja[invalid]
 
+mock_roles:
+  - geerlingguy.swap
+
 enable_list:
   - fqcn-builtins
+
+offline: true
 
 exclude_paths:
   - .git/
