@@ -14,6 +14,7 @@
       - debian-keyring
       - debian-archive-keyring
       - fail2ban
+      - certbot
       - git
       - gnupg
       - htop
