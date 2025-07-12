@@ -21,15 +21,15 @@ jobs:
       # - name: Install Ansible collections
       #   run: ansible-galaxy collection install community.general
 
-      - name: list collections
-        run: ansible-galaxy collection list
+      # - name: list collections
+      #   run: ansible-galaxy collection list
 
       - name: Lint ansible-related files
         uses: ansible/ansible-lint@main
         with:
           args: "--offline"
         env:
-          ANSIBLE_COLLECTIONS_PATH: ~/.ansible/collections
+          ANSIBLE_COLLECTIONS_PATH: /opt/pipx/venvs/ansible-core/lib/python3.12/site-packages/ansible_collections
 
       - name: Cache packer
         uses: actions/cache@v4
