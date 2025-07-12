@@ -5,8 +5,13 @@ on:
     branches: [main]
 
 jobs:
+  lint_workflow:
+    uses: ./.github/workflows/lint.yml
   build:
     runs-on: ubuntu-latest
+    needs: [lint_workflow]
+    concurrency:
+      group: deploy-group # optional: ensure only one action runs at a time
 
     steps:
     - name: Checkout code

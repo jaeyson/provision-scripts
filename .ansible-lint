@@ -13,8 +13,6 @@ mock_roles:
 enable_list:
   - fqcn-builtins
 
-offline: true
-
 exclude_paths:
   - .git/
   - .github/
