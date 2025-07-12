@@ -17,12 +17,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # - name: Install Rust
-    #   uses: actions-rs/toolchain@v1
-    #   with:
-    #     toolchain: stable
-    #     profile: minimal
-    #     override: true
+    - name: Check rust version
+      run: rustc --version
+
+    - name: Check cargo version
+      run: cargo --version
+
+    - name: Cache cargo
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
     - name: Format check
       run: |
@@ -44,15 +54,25 @@ jobs:
         cd vultr-actix-web/web_app &&
         cargo build --release --verbose
 
-    - name: Copy files via SSH
-      uses: appleboy/scp-action@v1
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1
       with:
         host: ${{ secrets.HOST }}
         username: root
         password: ${{ secrets.PASSWORD }}
         port: 22
-        source: "vultr-actix-web/web_app/target/release/web_app"
-        target: /usr/local/bin/web_app
+        script: |
+          pwd
+
+    # - name: Copy files via SSH
+    #   uses: appleboy/scp-action@v1
+    #   with:
+    #     host: ${{ secrets.HOST }}
+    #     username: root
+    #     password: ${{ secrets.PASSWORD }}
+    #     port: 22
+    #     source: "vultr-actix-web/web_app/target/release/web_app"
+    #     target: /usr/local/bin/web_app
 
     # - name: Deploy to VPS
     #   if: github.ref == 'refs/heads/main'
