@@ -4,9 +4,6 @@ skip_list:
   - run-once[play]
   - jinja[invalid]
 
-# mock_modules:
-#   - community.general.ufw
-
 mock_roles:
   - geerlingguy.swap
 
