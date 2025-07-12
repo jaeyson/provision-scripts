@@ -18,8 +18,11 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Install Ansible collections
-        run: ansible-galaxy collection install community.general
+      # - name: Install Ansible collections
+      #   run: ansible-galaxy collection install community.general
+
+      - name: list collections
+        run: ansible-galaxy collection list
 
       - name: Lint ansible-related files
         uses: ansible/ansible-lint@main
