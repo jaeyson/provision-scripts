@@ -18,17 +18,12 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      # - name: Install Ansible collections
-      #   run: ansible-galaxy collection install community.general
-
-      # - name: list collections
-      #   run: ansible-galaxy collection list
-
-      - name: Lint ansible-related files
+      - name: Lint ansible files
         uses: ansible/ansible-lint@main
         with:
           args: "--offline"
         env:
+          # the path from using `ansible-galaxy collection list` command
           ANSIBLE_COLLECTIONS_PATH: /opt/pipx/venvs/ansible-core/lib/python3.12/site-packages/ansible_collections
 
       - name: Cache packer
