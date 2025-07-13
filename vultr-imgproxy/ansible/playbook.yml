@@ -8,6 +8,7 @@
   roles:
     - wait_for_connection
     - packages
+    # - journalctl # careful, we reduced log size and duration
     - imgproxy
     - security
     - geerlingguy.swap
