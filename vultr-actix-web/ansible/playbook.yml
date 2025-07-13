@@ -8,6 +8,5 @@
   roles:
     - wait_for_connection
     - packages
-    # - firewall # no need, since we're using firewall from providers
     - security
     - geerlingguy.swap
