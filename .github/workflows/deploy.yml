@@ -54,6 +54,11 @@ jobs:
         cd vultr-actix-web/web_app &&
         cargo build --release --verbose
 
+    - uses: actions/upload-artifact@v4
+      with:
+        name: web-app-artifact
+        path: vultr-actix-web/web_app/target/release/web_app
+
     - uses: actions/download-artifact@v4
       with:
         name: web-app-artifact
@@ -66,7 +71,7 @@ jobs:
         username: root
         password: ${{ secrets.PASSWORD }}
         port: 22
-        path: vultr-actix-web/web_app/target/release
+        source: artifactfiles/*
         target: /usr/local/bin
 
     - name: Deploy to VPS
@@ -77,7 +82,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-          ls -lha /usr/local/bin
+          pwd
 
     # - name: Deploy to VPS
     #   if: github.ref == 'refs/heads/main'
