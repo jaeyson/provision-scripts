@@ -1,4 +1,15 @@
 ---
+- name: Add a group named sslreaders
+  ansible.builtin.group:
+    name: sslreaders
+    state: present
+
+- name: Add user www-data to the sslreaders group
+  ansible.builtin.user:
+    name: www-data
+    groups: sslreaders
+    append: yes
+
 - name: Update SSH configuration to be more secure
   ansible.builtin.lineinfile:
     dest: "/etc/ssh/sshd_config"
@@ -70,3 +81,11 @@
 - name: Enable ufw
   community.general.ufw:
     state: enabled
+
+- name: Deploy systemd service from template
+  ansible.builtin.template:
+    src: web_app.service.j2
+    dest: /etc/systemd/system/web_app.service
+    mode: '0600'
+  notify:
+    - Reload systemd

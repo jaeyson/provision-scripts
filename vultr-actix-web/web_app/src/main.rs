@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
         }
     };
     match builder.set_private_key_file(
-        "/etc/letsencrypt/live/test.nappy.co/privkey.pem",
+        "/etc/letsencrypt/live/test.domain.co/privkey.pem",
         SslFiletype::PEM,
     ) {
         Ok(b) => b,
@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
             std::process::exit(1);
         }
     };
-    match builder.set_certificate_chain_file("/etc/letsencrypt/live/test.nappy.co/fullchain.pem") {
+    match builder.set_certificate_chain_file("/etc/letsencrypt/live/test.domain.co/fullchain.pem") {
         Ok(b) => b,
         Err(e) => {
             eprintln!("Failed to create SslAcceptor: {e:?}");

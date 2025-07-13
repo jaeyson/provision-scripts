@@ -1,8 +1,8 @@
 name: Deploy Actix-Web app
 
-on:
-  pull_request:
-    branches: [main]
+# on:
+#   pull_request:
+#     branches: [main]
 
 jobs:
   lint_workflow:
@@ -75,6 +75,7 @@ jobs:
         target: /opt
 
     - name: Deploy to VPS
+      # if: github.ref == 'refs/heads/main'
       uses: appleboy/ssh-action@v1
       with:
         host: ${{ secrets.HOST }}
@@ -82,17 +83,6 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
+          systemctl stop web_app
           cp /opt/release/web_app /usr/local/bin/web_app
-          pwd
-
-    # - name: Deploy to VPS
-    #   if: github.ref == 'refs/heads/main'
-    #   uses: appleboy/ssh-action@v1
-    #   with:
-    #     host: ${{ secrets.HOST }}
-    #     username: root
-    #     password: ${{ secrets.PASSWORD }}
-    #     port: 22
-    #     script: |
-    #       systemctl stop web_app
-    #       systemctl start web_app
+          systemctl start web_app
