@@ -62,7 +62,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: web-app-artifact
-        path: artifactfiles
+        path: release
 
     - name: Copy files via SSH
       uses: appleboy/scp-action@v1
