@@ -1,5 +1,9 @@
 # Deployment steps
 
+> [!NOTE]
+> `deploy.yml.bak` is already written, you just have to rename it in
+> order for the runner to pick up the workflow.
+
 A bare-bones guide on simple CI/CD
 
 Some parts we're done manually, because we're starting of making immutable images,
