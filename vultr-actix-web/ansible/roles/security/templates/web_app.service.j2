@@ -1,0 +1,16 @@
+[Unit]
+Description=Rust Actix Web App
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/web_app
+User=www-data
+Group=sslreaders
+WorkingDirectory=/usr/local/bin
+Environment=RUST_BACKTRACE=full
+Restart=on-failure
+RestartSec=5s
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,1 +1,3 @@
 .ansible/
+
+*.DS_Store

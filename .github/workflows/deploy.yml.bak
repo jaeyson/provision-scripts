@@ -1,0 +1,88 @@
+name: Deploy Actix-Web app
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint_workflow:
+    uses: ./.github/workflows/lint.yml
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint_workflow]
+    concurrency:
+      group: deploy-group # optional: ensure only one action runs at a time
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check rust version
+      run: rustc --version
+
+    - name: Check cargo version
+      run: cargo --version
+
+    - name: Cache cargo
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Format check
+      run: |
+        cd vultr-actix-web/web_app &&
+        cargo fmt -- --check
+
+    - name: Lint with Clippy
+      run: |
+        cd vultr-actix-web/web_app &&
+        cargo clippy -- -D warnings
+
+    - name: Run tests
+      run: |
+        cd vultr-actix-web/web_app &&
+        cargo test --verbose
+
+    - name: Build
+      run: |
+        cd vultr-actix-web/web_app &&
+        cargo build --release --verbose
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: web-app-artifact
+        path: vultr-actix-web/web_app/target/release/web_app
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: web-app-artifact
+        path: release
+
+    - name: Copy files via SSH
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        source: release/*
+        target: /opt
+
+    - name: Deploy to VPS
+      # if: github.ref == 'refs/heads/main'
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.HOST }}
+        username: root
+        password: ${{ secrets.PASSWORD }}
+        port: 22
+        script: |
+          systemctl stop web_app
+          cp /opt/release/web_app /usr/local/bin/web_app
+          systemctl start web_app

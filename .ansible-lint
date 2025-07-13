@@ -5,9 +5,6 @@ skip_list:
   - jinja[invalid]
   - args[module]
 
-mock_modules:
-  - community.general.ufw
-
 mock_roles:
   - geerlingguy.swap
 

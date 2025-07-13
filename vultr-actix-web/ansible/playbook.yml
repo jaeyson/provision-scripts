@@ -1,6 +1,6 @@
 ---
-- name: Deploy Imgproxy and Caddy with Docker Compose and systemd
-  hosts: webservers
+- name: Base server
+  hosts: packer-base
   become: true
   gather_facts: true
   vars_files:
@@ -8,7 +8,5 @@
   roles:
     - wait_for_connection
     - packages
-    # - journalctl # careful, we reduced log size and duration
-    - imgproxy
     - security
     - geerlingguy.swap

@@ -1,0 +1,91 @@
+---
+- name: Add a group named sslreaders
+  ansible.builtin.group:
+    name: sslreaders
+    state: present
+
+- name: Add user www-data to the sslreaders group
+  ansible.builtin.user:
+    name: www-data
+    groups: sslreaders
+    append: true
+
+- name: Update SSH configuration to be more secure
+  ansible.builtin.lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^(#)?{{ item.key }}"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+    validate: 'sshd -T -f %s'
+    mode: "0644"
+  loop:
+    - { key: "PasswordAuthentication", value: "no" }
+    - { key: "PermitRootLogin", value: "prohibit-password" }
+    - { key: "Port", value: "22" }
+    - { key: "UseDNS", value: "no" }
+    - { key: "PermitEmptyPasswords", value: "no" }
+    - { key: "ChallengeResponseAuthentication", value: "no" }
+    - { key: "GSSAPIAuthentication", value: "no" }
+    - { key: "X11Forwarding", value: "no" }
+  notify:
+    - Restart ssh
+
+- name: Update unattended-upgrades configuration to be more secure
+  ansible.builtin.lineinfile:
+    dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
+    regexp: "^(\/\/)?{{ item.key }} "
+    line: "{{ item.key }} \"{{ item.value }}\";"
+    state: present
+    mode: "0644"
+  loop:
+    - { key: "Unattended-Upgrade::Automatic-Reboot", value: "{{ security_autoupdate_reboot }}" }
+    - { key: "Unattended-Upgrade::Automatic-Reboot-Time", value: "{{ security_autoupdate_reboot_time }}" }
+  when: security_autoupdate_reboot
+
+- name: Set journald log size limit to 100M
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?SystemMaxUse='
+    line: 'SystemMaxUse=100M'
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart systemd-journald
+
+- name: Set journald log retention to 7 days
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?MaxRetentionSec='
+    line: 'MaxRetentionSec=7d'
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart systemd-journald
+
+- name: Configure ufw rules
+  community.general.ufw:
+    rule: "{{ item.rule }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  loop:
+    - rule: 'limit'
+      port: '22'
+      proto: 'tcp'
+    - rule: 'allow'
+      port: '80'
+      proto: 'tcp'
+    - rule: 'allow'
+      port: '443'
+      proto: 'tcp'
+
+- name: Enable ufw
+  community.general.ufw:
+    state: enabled
+
+- name: Deploy systemd service from template
+  ansible.builtin.template:
+    src: web_app.service.j2
+    dest: /etc/systemd/system/web_app.service
+    mode: '0600'
+  notify:
+    - Reload systemd
