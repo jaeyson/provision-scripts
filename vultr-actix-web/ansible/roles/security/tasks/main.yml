@@ -8,7 +8,7 @@
   ansible.builtin.user:
     name: www-data
     groups: sslreaders
-    append: yes
+    append: true
 
 - name: Update SSH configuration to be more secure
   ansible.builtin.lineinfile:
