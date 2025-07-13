@@ -71,8 +71,8 @@ jobs:
         username: root
         password: ${{ secrets.PASSWORD }}
         port: 22
-        source: artifactfiles/*
-        target: /usr/local/bin
+        source: release/*
+        target: /opt
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1
@@ -82,6 +82,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
+          cp /opt/release/web_app /usr/local/bin/web_app
           pwd
 
     # - name: Deploy to VPS
