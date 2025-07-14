@@ -16,7 +16,11 @@ So the part where we do manual edits is:
 
 ## add the necessary creds for packer, ansible & terraform
 
-Things like Vultr API key. Make sure your ipv4 address is allowed in API page.
+Things like Vultr API key, snapshot id, plan, region, etc. Make
+sure your ipv4 address is allowed in API page. Also, add the
+`secrets.HOST` and `secrets.PASSWORD` in github repo secrets.
+
+source: https://github.com/<ORG_OR_USERNAME>//settings/secrets/actions/new
 
 ## create a packer image
 Refer readme in packer dir
