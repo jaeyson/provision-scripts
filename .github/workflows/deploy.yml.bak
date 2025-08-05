@@ -39,10 +39,14 @@ jobs:
         cd vultr-actix-web/web_app &&
         cargo fmt -- --check
 
+    - name: Audit
+      run: |
+        cargo audit
+
     - name: Lint with Clippy
       run: |
         cd vultr-actix-web/web_app &&
-        cargo clippy -- -D warnings
+        cargo clippy --verbose -- -D warnings
 
     - name: Run tests
       run: |
