@@ -1,19 +1,19 @@
 {{ custom_domain }} {
   handle_path /* {
-    #request_body {
-    #  max_size 200MB
-    #}
+    request_body {
+      max_size 200MB
+    }
 
     uri replace "=" ":"
     uri replace "&" "/"
-    rewrite * /unsafe/{query}/plain/s3://bucket_name/{path}
+    rewrite * /unsafe/{query}/plain/s3://{{ bucket_name }}/{path}
     reverse_proxy imgproxy:8080
   }
 
   handle_errors {
     uri replace "=" ":"
     uri replace "&" "/"
-    rewrite * /unsafe/{query}/plain/s3://bucket_name/photo/404.jpg
+    rewrite * /unsafe/{query}/plain/s3://{{ bucket_name }}/photo/404.jpg
     reverse_proxy imgproxy:8080
   }
 }
