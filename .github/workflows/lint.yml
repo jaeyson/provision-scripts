@@ -27,34 +27,34 @@ jobs:
           ANSIBLE_COLLECTIONS_PATH: /opt/pipx/venvs/ansible-core/lib/python3.12/site-packages/ansible_collections
 
       - name: Cache packer
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.config/packer/plugins/github.com/vultr/vultr
           key: packer-${{ runner.os }}-${{ hashFiles('**/packer.pkr.hcl') }}
           restore-keys: ${{ runner.os }}-packer
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: Cache tf mysql provider
         with:
           path: vultr/terraform/database/mysql
           key: ${{ runner.os }}-tf-mysql-${{ hashFiles('vultr/terraform/database/mysql/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-tf-mysql-
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: Cache tf postgres provider
         with:
           path: vultr/terraform/database/postgres
           key: ${{ runner.os }}-tf-pg-${{ hashFiles('vultr/terraform/database/postgres/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-tf-pg-
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: Cache tf vultr provider
         with:
           path: vultr/terraform/instance
           key: ${{ runner.os }}-tf-vultr-${{ hashFiles('vultr/terraform/instance/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-tf-vultr-
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         name: Cache plugin dir
         with:
           path: ~/.tflint.d/plugins
