@@ -2,6 +2,23 @@
 
 [![Lint](https://github.com/jaeyson/provision-scripts/actions/workflows/lint.yml/badge.svg)](https://github.com/jaeyson/provision-scripts/actions/workflows/lint.yml)
 
+## Ansible-specific stuffs
+
+### Runs the config on affected machine(s)
+
+```bash
+ansible-galaxy install -r requirements.yml
+
+# use this if you need vault
+ansible-vault create group_vars/all/vault.yml
+
+# no vault
+ansible-playbook -i hosts.ini playbook.yml
+
+# vault
+ansible-playbook playbook.yml --ask-vault-pass
+```
+
 ## Packer-specific stuffs
 
 ### Creating image snapshot in vultr
@@ -52,6 +69,10 @@ Where `11111111-0000-2222-3333-444444444444` (snapshot id) is the newly created 
 cd ./vultr/terraform
 
 cp terraform.tfvars.example terraform.tfvars
+
+terraform init
+
+terraform validate
 
 # idempotency and predictability
 terraform plan -out=vultr.tfplan
