@@ -65,7 +65,7 @@
   # its content base64 encoded.
   ansible.builtin.slurp:
     src: "/home/{{ new_username }}/.ssh/id_ed25519.pub"
-  register: ssh_public_key_content # Stores the result in this variable
+  register: securit_ssh_public_key_content # Stores the result in this variable
   become: true
   become_user: "{{ new_username }}"
 
@@ -73,7 +73,7 @@
   # This module ensures a specific line is present in a file.
   ansible.builtin.lineinfile:
     path: "/home/{{ new_username }}/.ssh/authorized_keys"
-    line: "{{ ssh_public_key_content['content'] | b64decode }}" # Decodes the slurped content
+    line: "{{ security_ssh_public_key_content['content'] | b64decode }}" # Decodes the slurped content
     create: true # Create the file if it doesn't exist
     owner: "{{ new_username }}"
     group: "{{ new_username }}"
