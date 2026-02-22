@@ -48,7 +48,7 @@ source "vultr" "base" {
   region_id = var.region_id
   os_id     = var.os_id
   # image_id             = var.image_id
-  snapshot_description = "Packer Base ${formatdate("YYYY-MM-DD hh:mm:ss", timestamp())}"
+  snapshot_description = "Fizzy Packer Base ${formatdate("YYYY-MM-DD hh:mm:ss", timestamp())}"
   ssh_username         = "root"
   state_timeout        = "15m"
 }
