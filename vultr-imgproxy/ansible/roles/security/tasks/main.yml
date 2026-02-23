@@ -29,4 +29,4 @@
   loop:
     - { key: "Unattended-Upgrade::Automatic-Reboot", value: "{{ security_autoupdate_reboot }}" }
     - { key: "Unattended-Upgrade::Automatic-Reboot-Time", value: "{{ security_autoupdate_reboot_time }}" }
-  when: security_autoupdate_reboot
+  when: security_autoupdate_reboot | bool

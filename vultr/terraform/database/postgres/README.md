@@ -3,7 +3,7 @@
 > then remove if there's `image_id` in `terraform.tfvars`.
 
 ```bash
-cd ./vultr-actix-web/terraform
+cd ./vultr/database/postgres
 
 cp terraform.tfvars.example terraform.tfvars
 
