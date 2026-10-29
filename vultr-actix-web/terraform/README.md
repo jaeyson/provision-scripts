@@ -1,3 +1,7 @@
+> [!TIP]
+> If you are using snapshots for terraform, use the `snapshot_id`,
+> then remove if there's `image_id` in `terraform.tfvars`.
+
 ```bash
 cd ./vultr-actix-web/terraform
 
