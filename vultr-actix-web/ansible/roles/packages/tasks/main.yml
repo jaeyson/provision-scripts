@@ -18,7 +18,7 @@
       - git
       - gnupg
       - htop
-      - ntp
+      - chrony
       - ufw
       - unattended-upgrades
     state: present
@@ -26,7 +26,7 @@
     autoremove: true
     autoclean: true
   notify:
-    - Start ntp
+    - Start chrony
     - Start fail2ban
 
 - name: Remove snap
